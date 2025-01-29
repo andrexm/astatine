@@ -43,11 +43,41 @@ class Engine
     }
 
     /**
+     * Build requested view
+     *
+     * @param string $viewName
+     * @return boolean
+     */
+    public static function buildRequested(string $viewName): bool
+    {
+        if (!self::validateDirectories()) return false;
+
+        // the informed view
+        $file = self::$views_path . DIRECTORY_SEPARATOR . $viewName . self::$extension;
+
+        // Verify specified view
+        if (!is_file($file)) {
+            self::$errorMessage = "The specified view doesn't exists!";
+            return false;
+        }
+
+        // Basic view building
+        try {
+            $content = file_get_contents($file);
+            file_put_contents(self::$cache_path . DIRECTORY_SEPARATOR . $viewName . ".php", $content);
+        } catch (\Throwable $th) {
+            self::$errorMessage = $th->getMessage();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Validate views and cache directories
      *
      * @return boolean
      */
-    public static function validateDirectories(): bool
+    private static function validateDirectories(): bool
     {
         // Verify views directory
         try {
