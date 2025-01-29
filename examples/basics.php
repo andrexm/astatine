@@ -10,4 +10,11 @@ $engine::config(
     __DIR__ . DIRECTORY_SEPARATOR . "cache"
 );
 
-var_dump($engine);
+$verify = $engine::validateDirectories();
+if ($verify) {
+    echo "valid directories";
+} else {
+    echo "invalid directories";
+}
+
+echo $engine::$errorMessage;
