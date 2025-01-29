@@ -10,7 +10,7 @@ class Engine
     private static string $cache_path;
     private static string $extension;
     private static ?Engine $instance = null;
-    public static bool|string $errorMessage = false;
+    public static bool|string $error_message = false;
 
     private function __construct()
     {}
@@ -59,23 +59,23 @@ class Engine
 
         // error if the view doesn't exists
         if (!file_exists($fileView)) {
-            self::$errorMessage = "The informed view doesn't exists!";
+            self::$error_message = "The informed view doesn't exists!";
             return false;
         }
 
         // when the view was updated
-        $view_updated_when = filemtime($fileView);
+        $viewUpdatedWhen = filemtime($fileView);
         // when the build file was updated (temp value)
-        $build_updated_when = $view_updated_when - 1;
+        $buildUpdatedWhen = $viewUpdatedWhen - 1;
 
         $builded = false; // if file build exists
         if (file_exists($fileBuild)) {
-            $build_updated_when = filemtime($fileBuild); // check when the build was created
+            $buildUpdatedWhen = filemtime($fileBuild); // check when the build was created
             $builded = true;
         }
 
         // if the builded file is older than the edited view, create a new one according to the view
-        if ($view_updated_when > $build_updated_when) {
+        if ($viewUpdatedWhen > $buildUpdatedWhen) {
             $builded = self::buildRequested($viewName);
         }
 
@@ -107,7 +107,7 @@ class Engine
             $content = file_get_contents($file);
             file_put_contents(self::$cache_path . DIRECTORY_SEPARATOR . $viewName . ".php", $content);
         } catch (\Throwable $th) {
-            self::$errorMessage = $th->getMessage();
+            self::$error_message = $th->getMessage();
             return false;
         }
         return true;
@@ -125,7 +125,7 @@ class Engine
             if (!is_dir(self::$views_path))
                 throw new ErrorException("Failed to read views directory!");
         } catch (ErrorException $err) {
-            self::$errorMessage = $err->getMessage();
+            self::$error_message = $err->getMessage();
             return false;
         }
 
@@ -134,7 +134,7 @@ class Engine
             if (!is_dir(self::$cache_path))
                 throw new ErrorException("Failed to read cache directory!");
         } catch (ErrorException $err) {
-            self::$errorMessage = $err->getMessage();
+            self::$error_message = $err->getMessage();
             return false;
         }
 
