@@ -1,0 +1,20 @@
+{
+    "name": "andrexm/astatine",
+    "description": "A simple PHP template system.",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Andrexm\\Astatine\\": "src/"
+        }
+    },
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "André Nascimento",
+            "email": "andre.neospace@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0"
+    }
+}
