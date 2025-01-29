@@ -43,23 +43,64 @@ class Engine
     }
 
     /**
+     * Render a view and includes
+     *
+     * @param string $viewName
+     * @param array $data
+     * @return boolean
+     */
+    public static function render(string $viewName, array $data = []): bool
+    {
+        // view path
+        $fileView = self::$views_path . DIRECTORY_SEPARATOR . $viewName . self::$extension;
+
+        // build file path
+        $fileBuild = self::$cache_path . DIRECTORY_SEPARATOR . $viewName . ".php";
+
+        // error if the view doesn't exists
+        if (!file_exists($fileView)) {
+            self::$errorMessage = "The informed view doesn't exists!";
+            return false;
+        }
+
+        // when the view was updated
+        $view_updated_when = filemtime($fileView);
+        // when the build file was updated (temp value)
+        $build_updated_when = $view_updated_when - 1;
+
+        $builded = false; // if file build exists
+        if (file_exists($fileBuild)) {
+            $build_updated_when = filemtime($fileBuild); // check when the build was created
+            $builded = true;
+        }
+
+        // if the builded file is older than the edited view, create a new one according to the view
+        if ($view_updated_when > $build_updated_when) {
+            $builded = self::buildRequested($viewName);
+        }
+
+        // return false because the self::buildRequested had an error
+        if (!$builded) {
+            return false;
+        }
+
+        // includes the file
+        include($fileBuild);
+        return true;
+    }
+
+    /**
      * Build requested view
      *
      * @param string $viewName
      * @return boolean
      */
-    public static function buildRequested(string $viewName): bool
+    private static function buildRequested(string $viewName): bool
     {
         if (!self::validateDirectories()) return false;
 
         // the informed view
         $file = self::$views_path . DIRECTORY_SEPARATOR . $viewName . self::$extension;
-
-        // Verify specified view
-        if (!is_file($file)) {
-            self::$errorMessage = "The specified view doesn't exists!";
-            return false;
-        }
 
         // Basic view building
         try {
