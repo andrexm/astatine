@@ -24,7 +24,7 @@ trait EvaluateTrait
     static private function data(string $content): string
     {
         $content = str_replace(["{{", "}}"], ["<?= htmlspecialchars(", ")?>"], $content);
-        $content = str_replace(["{!!", "!!}"], ["<?= ", " ?>"], $content);
+        $content = str_replace(["{!!", "!!}"], ["<?=", "?>"], $content);
         return $content;
     }
 }
