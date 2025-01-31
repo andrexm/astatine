@@ -6,6 +6,8 @@ use ErrorException;
 
 class Engine
 {
+    use EvaluateTrait;
+
     private static string $views_path;
     private static string $cache_path;
     private static string $extension;
@@ -35,7 +37,7 @@ class Engine
      * @param string $cache_path
      * @return void
      */
-    public static function config(string $views_path, string $cache_path, string $extension = ".php")
+    public static function config(string $views_path, string $cache_path, string $extension = ".blade.php")
     {
         self::$views_path = $views_path;
         self::$cache_path = $cache_path;
@@ -105,6 +107,11 @@ class Engine
         // Basic view building
         try {
             $content = file_get_contents($file);
+
+            // making the changes ---
+            $content = self::generate($content);
+
+            // creating the new file
             file_put_contents(self::$cache_path . DIRECTORY_SEPARATOR . $viewName . ".php", $content);
         } catch (\Throwable $th) {
             self::$error_message = $th->getMessage();
