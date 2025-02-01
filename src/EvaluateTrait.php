@@ -2,8 +2,13 @@
 
 namespace Andrexm\Astatine;
 
+use ErrorException;
+
 trait EvaluateTrait
 {
+    private static string $views_path;
+    private static string $extension;
+
     /**
      * Starts processing the view
      *
@@ -12,6 +17,7 @@ trait EvaluateTrait
      */
     static private function generate(string $content): string
     {
+        $content = self::include($content);
         $content = self::fixNotation($content);
         $content = self::simpleReplacing($content);
         $content = self::comments($content);
@@ -56,6 +62,12 @@ trait EvaluateTrait
         return $content;
     }
 
+    /**
+     * Remove comments from the resulting code
+     *
+     * @param string $content
+     * @return string
+     */
     static private function comments(string $content): string
     {
         while (str_contains($content, "{{--")) {
@@ -67,6 +79,29 @@ trait EvaluateTrait
             array_push($building, $second[1]);
 
             $content = implode("", $building);
+        }
+        return $content;
+    }
+
+    /**
+     * Inclues a subview
+     *
+     * @param string $content
+     * @return string
+     */
+    static private function include(string $content): string
+    {
+        while (str_contains($content, "@include(")) {
+            $breaking = explode("@include(", $content, 2);
+            $secondBreaking = explode(")", $breaking[1], 2);
+            $viewName = substr($secondBreaking[0], 1, strlen($secondBreaking[0]) - 2);
+            
+            $subViewContent = file_get_contents(self::$views_path . DIRECTORY_SEPARATOR . $viewName . self::$extension);
+            if (!$subViewContent) {
+                throw new ErrorException("Failed to include view " . $viewName);
+                return $content;
+            }
+            $content = implode("", [$breaking[0], $subViewContent, $secondBreaking[1]]);
         }
         return $content;
     }
