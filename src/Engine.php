@@ -8,9 +8,7 @@ class Engine
 {
     use EvaluateTrait;
 
-    private static string $views_path;
     private static string $cache_path;
-    private static string $extension;
     private static ?Engine $instance = null;
     public static bool|string $error_message = false;
 
@@ -76,8 +74,14 @@ class Engine
             $builded = true;
         }
 
+        // make sure to build the view whenever a component is updated
+        $files = scandir(self::$views_path);
+        foreach ($files as $file) {
+            if ($file != "."  && $file != ".." && $buildUpdatedWhen < filemtime(self::$views_path . DIRECTORY_SEPARATOR . $file)) $builded = false;
+        }
+
         // if the builded file is older than the edited view, create a new one according to the view
-        if ($viewUpdatedWhen > $buildUpdatedWhen) {
+        if ($viewUpdatedWhen > $buildUpdatedWhen || $builded == false) {
             $builded = self::buildRequested($viewName);
         }
 
