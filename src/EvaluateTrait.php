@@ -17,6 +17,7 @@ trait EvaluateTrait
         $content = self::comments($content);
         $content = self::data($content);
         $content = self::fixEscapes($content);
+        $content = self::removeLines($content);
         return $content;
     }
 
@@ -92,5 +93,16 @@ trait EvaluateTrait
         $content = str_replace(["( '", "' )"], ['( "', '" )'], $content); // remove spaces between quotes and parentheses
         $content = str_replace(['")'], ['"): ?>'], $content);
         return $content;
+    }
+
+    /**
+     * Removes empty lines
+     *
+     * @param string $content
+     * @return string
+     */
+    static private function removeLines(string $content): string
+    {
+        return preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", PHP_EOL, $content);
     }
 }
