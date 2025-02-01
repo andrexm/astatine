@@ -14,6 +14,7 @@ trait EvaluateTrait
     {
         $content = self::fixNotation($content);
         $content = self::simpleReplacing($content);
+        $content = self::comments($content);
         $content = self::data($content);
         $content = self::fixEscapes($content);
         return $content;
@@ -50,6 +51,21 @@ trait EvaluateTrait
 
         foreach ($directivesPair as $key => $value) {
             $content = str_replace($key, $value, $content);
+        }
+        return $content;
+    }
+
+    static private function comments(string $content): string
+    {
+        while (str_contains($content, "{{--")) {
+            $building = [];
+            $breaking = explode("{{--", $content, 2);
+            $second = explode("--}}", $breaking[1], 2);
+
+            array_push($building, $breaking[0]);
+            array_push($building, $second[1]);
+
+            $content = implode("", $building);
         }
         return $content;
     }

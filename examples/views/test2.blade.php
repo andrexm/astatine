@@ -11,7 +11,8 @@ cafe2 {{ "<b>asdfasd</b>" }} <hr>
     @endif
 @endif
 
-<hr>
+{{-- This is a comment --}}
+<hr> 
 
 @php:
     echo "3324243s";
