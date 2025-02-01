@@ -48,7 +48,7 @@ trait EvaluateTrait
      */
     static private function simpleReplacing(string $content): string
     {
-        $directivesPair = [
+        $pairs = [
             "):" => "): ?>", ")\:" => "):", "@if" => "<?php if", "@endif" => "<?php endif ?>", "@else:" => "<?php else: ?>", "@elseif" => "<?php elseif",
             "@while" => "<?php while", "@endwhile" => "<?php endwhile ?>", "@for" => "<?php for", "@endfor" => "<?php endfor ?>",
             "@foreach" => "<?php foreach", "@endforeach" => "<?php endforeach ?>", "@default:" => "<?php default: ?>",
@@ -56,7 +56,7 @@ trait EvaluateTrait
             "@continue" => "<?php continue ?>", "@php:" => "<?php", "@endphp" => "?>"
         ];
 
-        foreach ($directivesPair as $key => $value) {
+        foreach ($pairs as $key => $value) {
             $content = str_replace($key, $value, $content);
         }
         return $content;

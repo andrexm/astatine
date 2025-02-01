@@ -18,4 +18,4 @@ cafe2 {{ "<b>asdfasd</b>" }} <hr>
     echo "3324243s";
 @endphp
 
-@include('subview')
+@include('subview')dd
