@@ -17,6 +17,7 @@ trait EvaluateTrait
      */
     static private function generate(string $content): string
     {
+        $content = self::inherit($content);
         $content = self::include($content);
         $content = self::fixNotation($content);
         $content = self::simpleReplacing($content);
@@ -104,6 +105,107 @@ trait EvaluateTrait
             $content = implode("", [$breaking[0], $subViewContent, $secondBreaking[1]]);
         }
         return $content;
+    }
+
+    /**
+     * View inheritance
+     *
+     * @param string $content
+     * @return string
+     */
+    static private function inherit(string $content): string
+    {
+        $extends = self::getExtends($content);
+        if ($extends) {
+            $extendView = file_get_contents(self::$views_path . DIRECTORY_SEPARATOR . $extends . self::$extension);
+
+            while (str_contains($content, "@section")) {
+                $breaking = explode("@section", $content, 2);
+                $secondBreaking = explode("):", $breaking[1], 2)[1];
+                $subContent = explode("@endsection", $secondBreaking)[0];
+                $sectionName = self::getParam("@section", "@section" . $breaking[1]);
+
+                $extendView = self::putYield($sectionName, $subContent, $extendView);
+                $content = $secondBreaking;
+            }
+
+            return self::removeYields($extendView);
+        }
+        return self::removeYields($content);
+    }
+
+    /**
+     * Finds and puts the respective section content
+     *
+     * @param string $sectionName
+     * @param string $subContent
+     * @param string $content
+     * @return string
+     */
+    static private function putYield(string $sectionName, string $subContent, string $content): string
+    {
+        $scanContent = $content; // the next part to read
+        $afterBreaking = ""; // preserves the read content
+        while (str_contains($scanContent, "@yield")) {// if the next part has a yield
+            $yieldName = self::getParam("@yield", $scanContent);
+            $breaking = explode("@yield", $scanContent, 2);
+            $afterBreaking .= $breaking[0];
+            $secondBreaking = explode(")", $breaking[1], 2)[1];
+
+            if ($yieldName == $sectionName) {
+                $newContent = $afterBreaking . $subContent . $secondBreaking;
+                return $newContent;
+            }
+            $afterBreaking .= '@yield("' . $yieldName . '")'; // if not found, recover code
+            $scanContent = explode("@yield", $scanContent, 2)[1]; // gets the next part to read
+        }
+        return $content; // wanted yield not found
+    }
+
+    /**
+     * Remove not found yields
+     *
+     * @param string $content
+     * @return string
+     */
+    static private function removeYields(string $content): string
+    {
+        while (str_contains($content, "@yield")) {
+            $breaking = explode("@yield", $content, 2);
+            $secondBreaking = explode(")", $breaking[1], 2);
+            $content = $breaking[0] . $secondBreaking[1];
+        }
+        return $content;
+    }
+
+    /**
+     * Get extends from view
+     *
+     * @param string $content
+     * @return boolean|string
+     */
+    static private function getExtends(string $content): bool|string
+    {
+        return self::getParam("@extends", $content);
+    }
+
+    /**
+     * Return the param set on the view
+     *
+     * @param string $of
+     * @param string $content
+     * @return boolean|string
+     */
+    static private function getParam(string $of, string $content): bool|string
+    {
+        $breaking = explode($of, $content, 2);
+        if (isset($breaking[1])) {
+            $secondBreaking = explode(")", $breaking[1], 2);
+            $otherBreaking = explode("'", $secondBreaking[0]);
+            $param = isset($otherBreaking[1]) ? $otherBreaking[1] : explode('"', $secondBreaking[0])[1];
+            return $param;
+        }
+        return false;
     }
 
     /**

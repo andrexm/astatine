@@ -19,3 +19,9 @@ cafe2 {{ "<b>asdfasd</b>" }} <hr>
 @endphp
 
 @include('subview')dd
+
+<hr>
+
+{{ (true && false) || (true && (true)) }}
+
+@extends('my-thunder')
