@@ -131,9 +131,9 @@ trait EvaluateTrait
                 $content = $secondBreaking;
             }
 
-            return self::removeYields($extendView);
+            return self::removeYieldsAndExtends($extendView);
         }
-        return self::removeYields($content);
+        return self::removeYieldsAndExtends($content);
     }
 
     /**
@@ -165,18 +165,23 @@ trait EvaluateTrait
     }
 
     /**
-     * Remove not found yields
+     * Remove not found yields and extends tags
      *
      * @param string $content
      * @return string
      */
-    static private function removeYields(string $content): string
+    static private function removeYieldsAndExtends(string $content): string
     {
-        while (str_contains($content, "@yield")) {
-            $breaking = explode("@yield", $content, 2);
-            $secondBreaking = explode(")", $breaking[1], 2);
-            $content = $breaking[0] . $secondBreaking[1];
+        $fields = ['@yield', '@extends'];
+
+        foreach ($fields as $value) {
+            while (str_contains($content, $value)) {
+                $breaking = explode($value, $content, 2);
+                $secondBreaking = explode(")", $breaking[1], 2);
+                $content = $breaking[0] . $secondBreaking[1];
+            }
         }
+        
         return $content;
     }
 
