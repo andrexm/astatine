@@ -24,4 +24,4 @@ cafe2 {{ "<b>asdfasd</b>" }} <hr>
 
 {{ (true && false) || (true && (true)) }}
 
-@extends('my-thunder')
+@extends('my-thunder')s

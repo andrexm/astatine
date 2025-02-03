@@ -116,8 +116,10 @@ trait EvaluateTrait
     static private function inherit(string $content): string
     {
         $extends = self::getExtends($content);
-        if ($extends) {
-            $extendView = file_get_contents(self::$views_path . DIRECTORY_SEPARATOR . $extends . self::$extension);
+        $extendsName = self::$views_path . DIRECTORY_SEPARATOR . $extends . self::$extension;
+
+        if ($extends && file_exists($extendsName)) {
+            $extendView = file_get_contents($extendsName);
 
             while (str_contains($content, "@section")) {
                 $breaking = explode("@section", $content, 2);

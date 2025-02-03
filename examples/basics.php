@@ -10,4 +10,4 @@ $engine::config(
     __DIR__ . DIRECTORY_SEPARATOR . "cache"
 );
 
-$engine::render("test-inherit");
+$engine::render("test2");
