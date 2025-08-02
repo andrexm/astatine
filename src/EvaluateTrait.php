@@ -15,7 +15,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function generate(string $content): string
+    private static function generate(string $content): string
     {
         $content = self::inherit($content);
         $content = self::include($content);
@@ -34,7 +34,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function data(string $content): string
+    private static function data(string $content): string
     {
         $content = str_replace(["{{", "}}"], ["<?= htmlspecialchars(", ")?>"], $content);
         $content = str_replace(["{!!", "!!}"], ["<?=", "?>"], $content);
@@ -47,7 +47,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function simpleReplacing(string $content): string
+    private static function simpleReplacing(string $content): string
     {
         $pairs = [
             "):" => "): ?>", ")\:" => "):", "@if" => "<?php if", "@endif" => "<?php endif ?>", "@else:" => "<?php else: ?>", "@elseif" => "<?php elseif",
@@ -69,7 +69,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function comments(string $content): string
+    private static function comments(string $content): string
     {
         while (str_contains($content, "{{--")) {
             $building = [];
@@ -90,7 +90,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function include(string $content): string
+    private static function include(string $content): string
     {
         while (str_contains($content, "@include(")) {
             $breaking = explode("@include(", $content, 2);
@@ -113,7 +113,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function inherit(string $content): string
+    private static function inherit(string $content): string
     {
         $extends = self::getExtends($content);
         $extendsName = self::$views_path . DIRECTORY_SEPARATOR . $extends . self::$extension;
@@ -144,7 +144,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function putYield(string $sectionName, string $subContent, string $content): string
+    private static function putYield(string $sectionName, string $subContent, string $content): string
     {
         $scanContent = $content; // the next part to read
         $afterBreaking = ""; // preserves the read content
@@ -170,7 +170,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function removeYieldsAndExtends(string $content): string
+    private static function removeYieldsAndExtends(string $content): string
     {
         $fields = ['@yield', '@extends'];
 
@@ -191,7 +191,7 @@ trait EvaluateTrait
      * @param string $content
      * @return boolean|string
      */
-    static private function getExtends(string $content): bool|string
+    private static function getExtends(string $content): bool|string
     {
         return self::getParam("@extends", $content);
     }
@@ -203,7 +203,7 @@ trait EvaluateTrait
      * @param string $content
      * @return boolean|string
      */
-    static private function getParam(string $of, string $content): bool|string
+    private static function getParam(string $of, string $content): bool|string
     {
         $breaking = explode($of, $content, 2);
         if (isset($breaking[1])) {
@@ -219,7 +219,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function fixEscapes(string $content): string
+    private static function fixEscapes(string $content): string
     {
         return implode("):", explode(")\:", $content));
     }
@@ -245,7 +245,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static private function removeLines(string $content): string
+    private static function removeLines(string $content): string
     {
         return preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", PHP_EOL, $content);
     }
