@@ -230,7 +230,7 @@ trait EvaluateTrait
      * @param string $content
      * @return string
      */
-    static function fixNotation(string $content): string
+    public static function fixNotation(string $content): string
     {
         $content = str_replace(["{{ ", " }}"], ["{{", "}}"], $content); // remove spaces
         $content = str_replace(["('", "')"], ['("', '")'], $content); // remove single quotes
