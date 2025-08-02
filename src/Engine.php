@@ -35,7 +35,7 @@ class Engine
      * @param string $cache_path
      * @return void
      */
-    public static function config(string $views_path, string $cache_path, string $extension = ".blade.php")
+    public static function config(string $views_path, string $cache_path, string $extension = ".blade.php"): void
     {
         self::$views_path = $views_path;
         self::$cache_path = $cache_path;
