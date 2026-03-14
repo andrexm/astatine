@@ -10,4 +10,6 @@ $engine::config(
     __DIR__ . DIRECTORY_SEPARATOR . "cache"
 );
 
-$engine::render("test2");
+echo $engine::render("home");
+
+echo $engine::$error_message;
