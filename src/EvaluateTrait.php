@@ -50,11 +50,26 @@ trait EvaluateTrait
     private static function simpleReplacing(string $content): string
     {
         $pairs = [
-            "):" => "): ?>", ")\:" => "):", "@if" => "<?php if", "@endif" => "<?php endif ?>", "@else:" => "<?php else: ?>", "@elseif" => "<?php elseif",
-            "@while" => "<?php while", "@endwhile" => "<?php endwhile ?>", "@for" => "<?php for", "@endfor" => "<?php endfor ?>",
-            "@foreach" => "<?php foreach", "@endforeach" => "<?php endforeach ?>", "@default:" => "<?php default: ?>",
-            "@switch" => "<?php switch", "@endswitch" => "<?php endswitch ?>", "@case" => "<?php case", "@break" => "<?php break ?>",
-            "@continue" => "<?php continue ?>", "@php:" => "<?php", "@endphp" => "?>"
+            "):" => "): ?>",
+            ")\:" => "):",
+            "@if" => "<?php if",
+            "@endif" => "<?php endif ?>",
+            "@else:" => "<?php else: ?>",
+            "@elseif" => "<?php elseif",
+            "@while" => "<?php while",
+            "@endwhile" => "<?php endwhile ?>",
+            "@for" => "<?php for",
+            "@endfor" => "<?php endfor ?>",
+            "@foreach" => "<?php foreach",
+            "@endforeach" => "<?php endforeach ?>",
+            "@default:" => "<?php default: ?>",
+            "@switch" => "<?php switch",
+            "@endswitch" => "<?php endswitch ?>",
+            "@case" => "<?php case",
+            "@break" => "<?php break ?>",
+            "@continue" => "<?php continue ?>",
+            "@php:" => "<?php",
+            "@endphp" => "?>"
         ];
 
         foreach ($pairs as $key => $value) {
