@@ -1,6 +1,6 @@
 {
     "name": "andrexm/astatine",
-    "description": "A simple PHP template system.",
+    "description": "A simple PHP template system inspired by Blade.",
     "type": "library",
     "autoload": {
         "psr-4": {
